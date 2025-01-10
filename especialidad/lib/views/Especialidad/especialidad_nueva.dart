@@ -190,7 +190,7 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                 ),
               ),
               SizedBox(height:25),
-              TextField(
+              TextFormField(
                 controller: nombreEspeController, //Controlador para la especialidad
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.sentences, //Primera letra en mayuscula
