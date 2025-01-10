@@ -31,5 +31,21 @@ class EspecialidadRepository{
     }
   } 
 
-
+// Función para actualizar especialidad
+Future<int> update(Especialidad especialidad) async {
+  // Manejo de errores
+  try {
+    // Se actualiza en la base de datos utilizando el ID de la especialidad y sus nuevos valores
+    return await DbConecction.update(
+      tableName,
+      especialidad.toMap(),
+      where: 'id = ?',  // Condición para la actualización (en este caso se actualiza por id)
+      whereArgs: [especialidad.id], // El ID de la especialidad a actualizar
+    );
+  } catch (e) {
+    // Si ocurre un error, se imprime y se vuelve a lanzar el error
+    print('Error al actualizar especialidad: $e');
+    rethrow;
+  }
+}
 }
