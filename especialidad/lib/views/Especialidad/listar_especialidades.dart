@@ -194,16 +194,16 @@ class _ListarEspecialidadState extends State<ListarEspecialidad> {
                                                             foregroundColor: Colors.white,
                                                           ),
                                                           onPressed: () async {
-                                                            int nuevoEstado = especialidad.estadoEspe == 1 ? 0 : 1;
-                                                            try {
-                                                              await _especialidadRepository.updateEstado(especialidad.id!, nuevoEstado);
-                                                              setState(() {
-                                                                especialidad.estadoEspe = nuevoEstado;
-                                                              });
-                                                              Navigator.of(context).pop();
-                                                            } catch (e) {
-                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al cambiar el estado')));
-                                                            }
+                                                            // int nuevoEstado = especialidad.estadoEspe == 1 ? 0 : 1;
+                                                            // try {
+                                                            //   await _especialidadRepository.updateEstado(especialidad.id!, nuevoEstado);
+                                                            //   setState(() {
+                                                            //     especialidad.estadoEspe = nuevoEstado;
+                                                            //   });
+                                                            //   Navigator.of(context).pop();
+                                                            // } catch (e) {
+                                                            //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al cambiar el estado')));
+                                                            // }
                                                           },
                                                         ),
                                                         SizedBox(width: 10),
