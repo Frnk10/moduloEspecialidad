@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart'; //Importar paquete para seleccionar o tomar foto de una imagen
 import 'package:especialidad/models/especialidad.dart';
 import 'package:especialidad/repositories/Especialidad/especialidad_repository.dart';
+import 'package:especialidad/views/Especialidad/NavBar/nav_bar.dart';
 
 class EspecialidadFormView extends StatefulWidget {
   const EspecialidadFormView({super.key});
@@ -22,8 +23,6 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
   final ordenEspeController = TextEditingController();
   bool estado = true; //Variable para switch con estado inicial true
   final imagenEspeController = TextEditingController();
-  DateTime fechaCreacion = DateTime.now(); // Definir la fecha creacion
-  DateTime fechaActualizacion = DateTime.now(); // Definir la fecha actualizacion
   //Cargar imagen
   final ImagePicker _escoger = ImagePicker(); //Clase que permite seleccionar imagenes de galeria o camara
   File? _imagenSeleccionada; //Guarda la imagen seleccionada como un objeto File
@@ -166,10 +165,8 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
       nombreEspeController.text = _especialidad!.nombreEspe;
       descripcionEspeController.text = _especialidad!.descripcionEspe;
       ordenEspeController.text = _especialidad!.ordenEspe.toString();
-      estado = _especialidad!.estadoEspe == 1 ? true : false;
-      fechaCreacion = _especialidad!.fechaCreacionEspe as DateTime;
     }
-    return Scaffold(
+    return NavBar(
       appBar: AppBar(
         leading:IconButton(
           icon: Icon(Icons.chevron_left,color: Colors.white,size:40.0),
@@ -280,8 +277,10 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
                           activeTrackColor: const Color.fromRGBO(46, 154, 172, 1), // Color pista cuando esta activada
                           onChanged: (bool newEstado){
                             setState((){
-                              estado = newEstado; //Actualiza el estado del switch
-                              _especialidad!.estadoEspe = newEstado ? 1 : 0; // Actualizamos el modelo
+                              estado = newEstado; //Actualiza el estado del switch pulsandolo
+                              if (_especialidad != null) {
+                                _especialidad!.estadoEspe = newEstado ? 1 : 0;
+                              } 
                             });
                           }
                         ),
@@ -317,8 +316,7 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
                               ordenEspe: int.parse(ordenEspeController.text),
                               estadoEspe: estadoEspecialidad,
                               imagenEspe: imagen,
-                              fechaCreacionEspe: fechaCreacion,
-                              fechaActualizacionEspe: fechaActualizacion,
+                              fechaCreacionEspe: _especialidad == null ? DateTime.now().toLocal() : _especialidad!.fechaCreacionEspe,
                             );
                             int resultado; //Variable para mostrar id de especialidad cuando se crea o actualiza
                             if(_especialidad == null){
@@ -388,6 +386,15 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
           ),
         ),
       ),
+      //NavBar
+      indiceSeleccion: 0, //Indice principal del navBar
+      onNavTap: (indice){
+        if(indice == 0){
+          Navigator.pushNamed(context,'/especialidad/listado/');
+        }else if(indice == 1){
+          Navigator.pushNamed(context,'/especialidad/form/');
+        }
+      },
     );
   }
 }

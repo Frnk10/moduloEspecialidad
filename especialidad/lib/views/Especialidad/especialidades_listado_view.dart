@@ -101,7 +101,7 @@ class _ListadoEspecialidadViewState extends State<ListadoEspecialidadView> {
       :Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(10), //Padding total
+            padding: EdgeInsets.fromLTRB(10,10,10,15), //Padding total
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, //Cnetrar horizontalmente los elementos de la row
               children: [
