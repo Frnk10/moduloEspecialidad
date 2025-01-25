@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart'; //Importar paquete para seleccionar o tomar foto de una imagen
 import 'package:especialidad/models/especialidad.dart';
 import 'package:especialidad/repositories/Especialidad/especialidad_repository.dart';
-import 'package:especialidad/views/Especialidad/NavBar/nav_bar.dart';
 
 class EspecialidadFormView extends StatefulWidget {
   const EspecialidadFormView({super.key});
@@ -170,7 +169,7 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
       estado = _especialidad!.estadoEspe == 1 ? true : false;
       fechaCreacion = _especialidad!.fechaCreacionEspe as DateTime;
     }
-    return NavBar(
+    return Scaffold(
       appBar: AppBar(
         leading:IconButton(
           icon: Icon(Icons.chevron_left,color: Colors.white,size:40.0),
@@ -389,15 +388,6 @@ class _EspecialidadFormViewState extends State<EspecialidadFormView>{
           ),
         ),
       ),
-      //NavBar
-      indiceSeleccion: 0, //Indice principal del navBar
-      onNavTap: (indice){
-        if(indice == 0){
-          Navigator.pushNamed(context,'/especialidad/listado/');
-        }else if(indice == 1){
-          Navigator.pushNamed(context,'/especialidad/form/');
-        }
-      },
     );
   }
 }

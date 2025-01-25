@@ -1,7 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:especialidad/models/especialidad.dart';
 import 'package:especialidad/repositories/Especialidad/especialidad_repository.dart';
-import 'package:especialidad/views/Especialidad/NavBar/nav_bar.dart';
-import 'package:flutter/material.dart';
 
 class ListadoEspecialidadView extends StatefulWidget {
   const ListadoEspecialidadView({super.key});
@@ -89,7 +88,7 @@ class _ListadoEspecialidadViewState extends State<ListadoEspecialidadView> {
   
   @override
   Widget build(BuildContext context) {
-    return NavBar(
+    return Scaffold(
       appBar: AppBar(
         title: Text(
           "Listado de \nEspecialidades",
@@ -302,15 +301,6 @@ class _ListadoEspecialidadViewState extends State<ListadoEspecialidadView> {
           ),
         ],
       ),
-      //NAVBAR
-      indiceSeleccion: 0, //Indice principal del navBar
-      onNavTap: (indice){ //Manejo de clics entre pantallas
-        if(indice == 0){
-          Navigator.pushNamed(context,'/especialidad/listado/');
-        }else if(indice == 1){
-          Navigator.pushNamed(context,'/especialidad/form/');
-        }
-      },
     );
   }
 }

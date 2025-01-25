@@ -1,4 +1,3 @@
-import 'package:especialidad/views/Especialidad/NavBar/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class EspecialidadInfoView extends StatefulWidget {
@@ -11,7 +10,7 @@ class EspecialidadInfoView extends StatefulWidget {
 class _EspecialidadInfoViewState extends State<EspecialidadInfoView>{
   @override
   Widget build(BuildContext context){
-    return NavBar(
+    return Scaffold(
       appBar: AppBar(
         leading:IconButton(
           icon: Icon(Icons.chevron_left,color: Colors.white,size:40.0),
@@ -28,16 +27,6 @@ class _EspecialidadInfoViewState extends State<EspecialidadInfoView>{
         automaticallyImplyLeading: false, //Desactiva la flecha de regreso
       ),
       body: Center(child: Text("AQUÍ VA LA INFORMACIÓN")),
-      //NavBar
-      indiceSeleccion: 0, //Indice principal del navBar
-      onNavTap: (indice){
-        if(indice == 0){
-          Navigator.pushNamed(context,'/especialidad/listado/');
-        }else if(indice == 1){
-          Navigator.pushNamed(context,'/especialidad/form/');
-        }
-      },
-
     );
   }
 }
