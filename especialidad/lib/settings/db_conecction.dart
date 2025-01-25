@@ -28,7 +28,7 @@ class DbConecction {
           AFTER UPDATE ON especialidad
           FOR EACH ROW
           BEGIN
-            UPDATE especialidad SET fechaActualizacionEspe = CURRENT_TIMESTAMP WHERE id = OLD.id;
+            UPDATE especialidad SET fechaActualizacionEspe = DATETIME('now', 'localtime') WHERE id = OLD.id;
           END;
         """),
         await db.execute("""
