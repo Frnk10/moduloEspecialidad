@@ -1,5 +1,6 @@
-import 'package:especialidad/views/Especialidad/especialidad_nueva.dart';
-import 'package:especialidad/views/Especialidad/listar_especialidades.dart';
+import 'package:especialidad/views/Especialidad/especialidad_form_view.dart';
+import 'package:especialidad/views/Especialidad/especialidad_info_view.dart';
+import 'package:especialidad/views/Especialidad/especialidades_listado_view.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -12,10 +13,11 @@ class MyApp extends StatelessWidget{
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Ocultar la etiqueta de debug
       title: "Módulo de Especialidad",
-      initialRoute: '/especialidad/index',
+      initialRoute: '/especialidad/listado/',
       routes: {
-        '/especialidad/index': (context) => ListarEspecialidad(),
-        '/especialidad/form': (context) => const EspecialidadNueva(),
+        '/especialidad/listado/': (context) => ListadoEspecialidadView(),
+        '/especialidad/info/': (context) => EspecialidadInfoView(),
+        '/especialidad/form/': (context) => const EspecialidadFormView(),
       },
       theme: ThemeData( //Configuración global para modulos
         fontFamily: 'Prompt', //Tipo de letra

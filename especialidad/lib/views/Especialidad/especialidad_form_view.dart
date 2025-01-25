@@ -1,37 +1,39 @@
+import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart'; //Importar paquete para seleccionar o tomar foto de una imagen
 import 'package:especialidad/models/especialidad.dart';
 import 'package:especialidad/repositories/Especialidad/especialidad_repository.dart';
 import 'package:especialidad/views/Especialidad/NavBar/nav_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; //Importar paquete para seleccionar o tomar foto de una imagen
 
-class EspecialidadNueva extends StatefulWidget {
-  const EspecialidadNueva({super.key});
+class EspecialidadFormView extends StatefulWidget {
+  const EspecialidadFormView({super.key});
 
   @override
-  State<EspecialidadNueva> createState() => _EspecialidadNuevaState();
+  State<EspecialidadFormView> createState() => _EspecialidadFormViewState();
 }
 
-class _EspecialidadNuevaState extends State<EspecialidadNueva>{
-  final _nuevaEspecialidad = GlobalKey<FormState>(); //Clave global: transaccionar datos del formulario
+class _EspecialidadFormViewState extends State<EspecialidadFormView>{
+  Especialidad? _especialidad; // Declarar clase especialidad
+  final _formEspecialidadkey = GlobalKey<FormState>(); //Clave global: transaccionar datos del formulario
   //Controladores para los campos de especialidad
   final nombreEspeController = TextEditingController();
   final descripcionEspeController = TextEditingController();
   final ordenEspeController = TextEditingController();
-  final estadoEspeController = TextEditingController();
+  bool estado = true; //Variable para switch con estado inicial true
   final imagenEspeController = TextEditingController();
+  DateTime fechaCreacion = DateTime.now(); // Definir la fecha creacion
+  DateTime fechaActualizacion = DateTime.now(); // Definir la fecha actualizacion
   //Cargar imagen
-  final ImagePicker _escoger = ImagePicker(); //Paquete para seleccionar imagenes de galeria o camara
-  File? _imagen; //Guarda la imagen seleccionada como un objeto File
-  //Variable para switch con estado inicial false
-  bool estado = true;
-  //Color del cursor de escritura
-  final _colorCursor = const Color.fromARGB(255, 105, 103, 103);
+  final ImagePicker _escoger = ImagePicker(); //Clase que permite seleccionar imagenes de galeria o camara
+  File? _imagenSeleccionada; //Guarda la imagen seleccionada como un objeto File
   // Variable para imagen en base64
   String? base64Imagen;
-  //Funcion para aplicar estilos a los textos
+  // Color del cursor de escritura global
+  final _colorCursor = const Color.fromARGB(255, 105, 103, 103);
+
+  // FUNCION APLICAR ESTILOS A LOS TEXT, TEXTFIELDS
   InputDecoration estilosCampoTexto(String labelText) {
     return InputDecoration( //Aplica un borde alrededor del TextField
       labelText: labelText,
@@ -65,8 +67,8 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
     final XFile? escogerFile = await _escoger.pickImage(source: source);
     if(escogerFile != null){ //Validar que sea diferente de nulo
       setState((){
-        _imagen = File(escogerFile.path); //Gurdamos la imagen seleccionada
-        base64Imagen = base64Encode(_imagen!.readAsBytesSync()); //Convierte la imagen a base64
+        _imagenSeleccionada = File(escogerFile.path); //Gurdamos la imagen seleccionada
+        base64Imagen = base64Encode(_imagenSeleccionada!.readAsBytesSync()); //Convierte la imagen a base64
       });
     }
   }
@@ -117,11 +119,11 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
           ),
           child: Column(
             children: [
-              if (_imagen != null) ...[
+              if (_imagenSeleccionada != null) ...[
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8.0), //Bordes de la imagen
                   child: Image.file(
-                    _imagen!,
+                    _imagenSeleccionada!,
                     height: 70, //Alto de la imagen
                     width: 80, //double.infinity, //Ancho de la imagen
                     fit: BoxFit.cover,
@@ -134,7 +136,7 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                 children: [
                   Expanded(
                     child: Text(
-                      _imagen == null ? 'Cargar imagen' : 'Cambiar imagen', //Si hay una imagen mostrar 'Cambiar' y si no 'Cargar'
+                      _imagenSeleccionada == null ? 'Cargar imagen' : 'Cambiar imagen', //Si hay una imagen mostrar 'Cambiar' y si no 'Cargar'
                       style: TextStyle(
                         color: Color.fromRGBO(87, 99, 108, 0.5),
                         fontWeight: FontWeight.w500,
@@ -156,32 +158,38 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
       ),
     );
   }
-
-  //Funcion para aplicar estilos en el texto
   
   @override
   Widget build(BuildContext context) {
+    _especialidad = ModalRoute.of(context)!.settings.arguments as Especialidad ?; // Atrapar los argumentos de especialidad
+    if(_especialidad != null){ // Verificar si especialidad tiene datos
+      // Cargar los datos de especialidad a los controladores
+      nombreEspeController.text = _especialidad!.nombreEspe;
+      descripcionEspeController.text = _especialidad!.descripcionEspe;
+      ordenEspeController.text = _especialidad!.ordenEspe.toString();
+      estado = _especialidad!.estadoEspe == 1 ? true : false;
+      fechaCreacion = _especialidad!.fechaCreacionEspe as DateTime;
+    }
     return NavBar(
       appBar: AppBar(
         leading:IconButton(
           icon: Icon(Icons.chevron_left,color: Colors.white,size:40.0),
           onPressed: (){
-            Navigator.pushNamed(context,'/especialidad/index');
+            Navigator.pushNamed(context,'/especialidad/listado/');
           }, 
         ),            
-        title: const Text("CREAR ESPECIALIDAD",
+        title: Text(_especialidad == null ? "Crear Especialidad" : "Actualizar Especialidad", //Verifica y cambia el titulo
           style: TextStyle(
             color: Colors.white,
           ),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(20), // Espacio entre el body y el nav
         child: Form(
-          key: _nuevaEspecialidad, //Asignar clave global al formulario, (token)
+          key: _formEspecialidadkey, //Asignar clave global al formulario, (token)
           child: ListView(
             children: [
-              SizedBox(height:20),
               Text(
                 "Especialidad",
                 style: TextStyle(
@@ -198,11 +206,12 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                 cursorColor: _colorCursor, //Llamado a la variable que tiene el color del cursor de escritura
                 decoration: estilosCampoTexto('Nombre de la especialidad'), //Llamado a la funcion con los estilos
               ),
-              SizedBox(height: 35),
-              TextField(
+              SizedBox(height: 35), // Espacio entre textfields
+              TextFormField(
                 controller: descripcionEspeController, //Controlador para la descripcion
                 maxLines: 3, //Permite ingresar hasta 3 líneas de texto,
                 minLines: 3, //Numero minimo de lineas
+                maxLength: 25, // Numero maximo de caracteres
                 keyboardType: TextInputType.multiline, // Habilita el salto de línea
                 textCapitalization: TextCapitalization.sentences, //Primera letra en mayuscula de cada oracion
                 autocorrect: true, //Acitva el autocorrector
@@ -211,7 +220,7 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
               ),
               SizedBox(height:25),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start, //Alineación de los elementos en el Row
+                mainAxisAlignment: MainAxisAlignment.start, //Alineacion de los elementos en el Row
                 children: [
                   Expanded( //Que los elementos ocupen el espacio del row, column o flex
                     child:Column(
@@ -227,7 +236,7 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                         SizedBox(height:2),
                         SizedBox(// Para definir el ancho de un textfield
                           width: 100,
-                          child: TextField(
+                          child: TextFormField(
                             controller: ordenEspeController, //Controlador para el orden
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
@@ -273,6 +282,7 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                           onChanged: (bool newEstado){
                             setState((){
                               estado = newEstado; //Actualiza el estado del switch
+                              _especialidad!.estadoEspe = newEstado ? 1 : 0; // Actualizamos el modelo
                             });
                           }
                         ),
@@ -293,13 +303,14 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                       height: 50,
                       child: ElevatedButton.icon(
                         onPressed: () async{
-                          if(_nuevaEspecialidad.currentState!.validate()){
-                            //Convertir el estado del swu¿itch (true o false) a 1 o 0
+                          if(_formEspecialidadkey.currentState!.validate()){
+                            //Convertir el estado del switch (true o false) a 1 o 0
                             int estadoEspecialidad = estado ? 1 : 0;
                             //Si la imagen está en base64 y quieres convertirla a Uint8List
-                            Uint8List imagen = base64Decode(base64Imagen ?? '');
-                            //Obtener la fecha actual para fechaCreacion y fechaActualizacion
-                            DateTime fechaActual = DateTime.now();
+                            Uint8List? imagen; // Puede ser null
+                            if(base64Imagen != null && base64Imagen!.isNotEmpty){
+                              imagen = base64Decode(base64Imagen!);
+                            }
                             //Objeto con datos recopilados
                             Especialidad especialidad = Especialidad(
                               nombreEspe: nombreEspeController.text,
@@ -307,24 +318,40 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                               ordenEspe: int.parse(ordenEspeController.text),
                               estadoEspe: estadoEspecialidad,
                               imagenEspe: imagen,
-                              fechaCreacionEspe: fechaActual,
-                              fechaActualizacionEspe: fechaActual,
+                              fechaCreacionEspe: fechaCreacion,
+                              fechaActualizacionEspe: fechaActualizacion,
                             );
-                            try{
-                              var result = await EspecialidadRepository().create(especialidad); //Llamar a la funcion para crear una especialidad
-                              // ignore: avoid_print
-                              print('El id de la especialidad es: ${result.toString()}');
-                              if(context.mounted){
-                                Navigator.pushNamed(context,"/especialidad/index"); //Redirige a la ventana principal
+                            int resultado; //Variable para mostrar id de especialidad cuando se crea o actualiza
+                            if(_especialidad == null){
+                              try{
+                                resultado = await EspecialidadRepository().create(especialidad); //Llamar a la funcion para crear una especialidad
+                                // ignore: avoid_print
+                                print('El id de la especialidad es: ${resultado.toString()}');
+                              }catch(e){
+                                // ignore: avoid_print
+                                print('Error al crear la especialidad: $e');
                               }
-                            }catch(e){
-                              // ignore: avoid_print
-                              print('Error al crear la especialidad: $e');
+                            }else{
+                              // Si la espeecialidad ya existe, actualizarla
+                              try{
+                                especialidad.id = _especialidad!.id;
+                                resultado =  await EspecialidadRepository().update(especialidad); //Llamar a la funcion para crear una especialidad
+                                // ignore: avoid_print
+                                print('El id de la especialidad actualizada: ${resultado.toString()}');
+                              }catch(e){
+                                // ignore: avoid_print
+                                print('Error al actualizar la especialidad: $e');
+                              }
                             }
+                            if(context.mounted){
+                              Navigator.pushNamed(context,'/especialidad/listado/'); //Redirige a la ventana principal
+                            }                           
                           }
                         },
                         icon: Icon(Icons.save,color: Colors.white,size: 40),
-                        label: Text("Guardar",style: TextStyle(color: Colors.white,fontSize:16,fontWeight: FontWeight.w600)),
+                        label: Text(_especialidad == null ? "Guardar" : "Aceptar",
+                          style: TextStyle(color: Colors.white,fontSize:16,fontWeight: FontWeight.w600)
+                        ),
                         iconAlignment: IconAlignment.start, //Posicion del icono (izquierdo)
                         style: ElevatedButton.styleFrom(//Estilo para el boton
                           backgroundColor: Color.fromRGBO(73, 182, 199, 1),
@@ -341,7 +368,7 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
                       height: 50,
                       child: ElevatedButton.icon(
                         onPressed: (){
-                          Navigator.pushNamed(context,'/especialidad/index');
+                          Navigator.pushNamed(context,'/especialidad/listado/');
                         },
                         icon: Icon(Icons.cancel_rounded,size:40),
                         label: Text("Cancelar", style: TextStyle(color: Colors.white,fontSize:16,fontWeight: FontWeight.w600)),
@@ -366,9 +393,9 @@ class _EspecialidadNuevaState extends State<EspecialidadNueva>{
       indiceSeleccion: 0, //Indice principal del navBar
       onNavTap: (indice){
         if(indice == 0){
-          Navigator.pushNamed(context,'/especialidad/index');
+          Navigator.pushNamed(context,'/especialidad/listado/');
         }else if(indice == 1){
-          Navigator.pushNamed(context,'/especialidad/form');
+          Navigator.pushNamed(context,'/especialidad/form/');
         }
       },
     );

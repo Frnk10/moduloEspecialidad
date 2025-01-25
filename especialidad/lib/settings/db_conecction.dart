@@ -69,6 +69,17 @@ class DbConecction {
     return db.rawUpdate(sql);
   }
   
+  // Actualizar Campos especificos
+  static Future<int> updateFields(String tableName, dynamic data,String condicion, dynamic arguments ) async{
+    final db = await conectionDataBase();
+    return db.update(
+      tableName, // Nombre de la tabla
+      data,     // Mapa con los campos y valores a actualizar
+      where: condicion, // Condición para especificar qué fila se va a actualizar
+      whereArgs: arguments, // Argumentos para la condición
+    );
+  }
+
   //Elimninar usando helper
   static Future<int> delete(String tableName, int id) async{
     final db = await conectionDataBase();
@@ -84,7 +95,7 @@ class DbConecction {
   //Listar usando helper
   static Future<List<Map<String, dynamic>>> list(String tableName) async{
     final db = await conectionDataBase();
-    return await db.query(tableName,orderBy: 'id');
+    return await db.query(tableName,orderBy: 'estadoEspe DESC,id DESC');
   }
 
   //Listar usando sentencias SQL

@@ -32,7 +32,9 @@ class NavBar extends StatelessWidget {
         showUnselectedLabels: false, //Para no mostrar los labels debajo los iconos
         items: const <BottomNavigationBarItem> [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,color: Colors.white, size:30), //Icono del principal del navBar
+            icon: Icon(
+              Icons.home,color: Colors.white, size:30
+            ), //Icono del principal del navBar
             label: '' //Texto del icono, no habilitado por el show
           ),
           BottomNavigationBarItem(

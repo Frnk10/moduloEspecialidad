@@ -21,8 +21,8 @@ class Especialidad {
     this.ordenEspe,
     required this.estadoEspe,
     this.imagenEspe,
-    required this.fechaCreacionEspe,
-    required this.fechaActualizacionEspe
+    this.fechaCreacionEspe,
+    this.fechaActualizacionEspe
   });
 
   //Funciones
