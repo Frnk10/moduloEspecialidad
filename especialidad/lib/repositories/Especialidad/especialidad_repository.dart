@@ -1,5 +1,5 @@
-import 'package:especialidad/models/especialidad.dart';
-import 'package:especialidad/settings/db_conecction.dart';
+import 'package:especialidad/settings/db_conecction.dart'; // Conexion DB
+import 'package:especialidad/models/especialidad.dart'; // Models
 
 class EspecialidadRepository{
   final String tableName = 'especialidad'; //Envia dinamicamente el nombre de la tabla a afectar
@@ -19,7 +19,9 @@ class EspecialidadRepository{
   //Funcion para listar especialidades
   Future<List<Especialidad>> list() async{
     try{
-      var data = await DbConecction.list(tableName);
+      // Construir consulta
+      String sql = "SELECT * FROM $tableName ORDER BY estadoEspe DESC, id DESC";
+      var data = await DbConecction.listSql(sql);
       if(data.isEmpty){//Comprobrar si esta vacia la lista
         return List.empty(); //Devolver una lista vacia
       }
@@ -42,22 +44,6 @@ class EspecialidadRepository{
     }
   }
 
-  // Funcion para actualizar campos especificos en este caso el estado de la especialidad
-  Future<int> updateEstado(int id) async{
-    try{
-      // Mapa con el campo 'estado' y su nuevo valor
-      Map<String, dynamic> data = {'estadoEspe': 0};
-      String condicion = 'id = ?'; // Se usa '?' como marcador de posición para el valor de id
-      List<dynamic> arguments = [id]; // Argumentos para la condición
-      int filas = await DbConecction.updateFields(tableName, data, condicion, arguments); // Llamado funcion updateFields
-      return filas;
-    } catch (e){
-      // ignore: avoid_print
-      print('Error al actualizar el estado de la especialidad $id: $e');
-      rethrow;
-    }
-  }
-
   //Funcion para eliminar especialidad
   Future<int> delete(int id) async{
     try{
@@ -65,6 +51,21 @@ class EspecialidadRepository{
     }catch (e){
       // ignore: avoid_print
       print('Error al eliminar la especialidad');
+      rethrow;
+    }
+  }
+
+  // FUNCIONES ADICIONALES
+  // Funcion para actualizar campos especificos en este caso el estado de la especialidad
+  Future<int> updateEstado(int id) async{
+    try{
+      // Construir consula
+      String sqlUpdate = "UPDATE $tableName SET estadoEspe = 0 WHERE id = $id";
+      int filas = await DbConecction.updateSql(sqlUpdate); // Llamado funcion updateSql
+      return filas;
+    } catch (e){
+      // ignore: avoid_print
+      print('Error al actualizar el estado de la especialidad $id: $e');
       rethrow;
     }
   }

@@ -1,28 +1,25 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 class Especialidad {
   //Atributos
   int? id;
-  String nombreEspe;
-  String descripcionEspe;
-  int? ordenEspe;
-  int? estadoEspe;
-  Uint8List? imagenEspe; //Atributo para la imagen
-  DateTime? fechaCreacionEspe; //Atributo para las fechas
-  DateTime? fechaActualizacionEspe;
+  String titulo;
+  String descripcion;
+  int? orden;
+  int? estado;
+  String? imagen;
+  DateTime? fechaCreacion; //Atributo para las fechas
+  DateTime? fechaActualizacion;
 
   
   //Constructor
   Especialidad({
     this.id,
-    required this.nombreEspe,
-    required this.descripcionEspe,
-    this.ordenEspe,
-    required this.estadoEspe,
-    this.imagenEspe,
-    this.fechaCreacionEspe,
-    this.fechaActualizacionEspe
+    required this.titulo,
+    required this.descripcion,
+    this.orden,
+    required this.estado,
+    this.imagen,
+    this.fechaCreacion,
+    this.fechaActualizacion
   });
 
   //Funciones
@@ -31,13 +28,13 @@ class Especialidad {
   Map<String, dynamic> toMap(){
     return{
       'id': id,
-      'nombreEspe': nombreEspe,
-      'descripcionEspe': descripcionEspe,
-      'ordenEspe': ordenEspe,
-      'estadoEspe': estadoEspe,
-      'imagenEspe': imagenEspe != null ? base64Encode(imagenEspe!) : null, //Convertir a formato correcto
-      'fechaCreacionEspe': fechaCreacionEspe?.toIso8601String(), // Formato ISO 8601 - 2024-12-28T15:30:00 puede ser facilmente parseable
-      'fechaActualizacionEspe': fechaActualizacionEspe?.toIso8601String()
+      'nombreEspe': titulo,
+      'descripcionEspe': descripcion,
+      'ordenEspe': orden,
+      'estadoEspe': estado,
+      'imagenEspe': imagen,
+      'fechaCreacionEspe': fechaCreacion?.toIso8601String(), // Formato ISO 8601 - 2024-12-28T15:30:00 puede ser facilmente parseable
+      'fechaActualizacionEspe': fechaActualizacion?.toIso8601String()
     };
   }
 
@@ -45,15 +42,15 @@ class Especialidad {
   static Especialidad fromMap(Map<String, dynamic> map){
     return Especialidad(
       id: map['id'],
-      nombreEspe: map['nombreEspe'],
-      descripcionEspe: map['descripcionEspe'],
-      ordenEspe: map['ordenEspe'],
-      estadoEspe: map['estadoEspe'],
-      imagenEspe: map['imagenEspe'] != null ? base64Decode(map['imagenEspe']) : null,
-      fechaCreacionEspe: map['fechaCreacionEspe'] !=null //Fechas recuperadas como cadenas de texto
+      titulo: map['nombreEspe'],
+      descripcion: map['descripcionEspe'],
+      orden: map['ordenEspe'],
+      estado: map['estadoEspe'],
+      imagen: map['imagenEspe'],
+      fechaCreacion: map['fechaCreacionEspe'] !=null //Fechas recuperadas como cadenas de texto
         ? DateTime.parse(map['fechaCreacionEspe']) //Las cadenas se convierten a objetos DateTime
         : null,
-      fechaActualizacionEspe: map['fechaActualizacionEspe'] !=null
+      fechaActualizacion: map['fechaActualizacionEspe'] !=null
         ? DateTime.parse(map['fechaActualizacionEspe'])
         : null,
     );

@@ -2,14 +2,14 @@ import 'package:sqflite/sqflite.dart'; //Importar conexion a sqflite
 import 'package:path/path.dart'; //Importar gestor de rutas
 
 class DbConecction {
-  static const vesrion = 1; //
+  static const version = 1; //
   static const String dbname = "hospital.db"; //Nombre BDD
 
   //Variable asincrona: cargar datos intermitentemente
   static Future<Database> conectionDataBase() async{
     return openDatabase(
       join(await getDatabasesPath(),dbname), //Estandarizar ruta de la BDD en el movil
-      version: vesrion,
+      version: version,
       onCreate: (db, version) async =>{ //Verifica si tiene una BDD creada y sino la crea.
         await db.execute("""
           CREATE TABLE especialidad(
@@ -18,7 +18,7 @@ class DbConecction {
             descripcionEspe TEXT NOT NULL,
             ordenEspe INTEGER,
             estadoEspe INTEGER NOT NULL,
-            imagenEspe BLOB,
+            imagenEspe VARCHAR(255),
             fechaCreacionEspe DATETIME DEFAULT CURRENT_TIMESTAMP,
             fechaActualizacionEspe DATETIME DEFAULT CURRENT_TIMESTAMP
           );
@@ -28,7 +28,7 @@ class DbConecction {
           AFTER UPDATE ON especialidad
           FOR EACH ROW
           BEGIN
-            UPDATE especialidad SET fechaActualizacionEspe = DATETIME('now', 'localtime') WHERE id = OLD.id;
+            UPDATE especialidad SET fechaActualizacionEspe = DATETIME('now', 'localtime')  WHERE id = OLD.id;
           END;
         """),
         await db.execute("""
@@ -68,17 +68,6 @@ class DbConecction {
     final db = await conectionDataBase();
     return db.rawUpdate(sql);
   }
-  
-  // Actualizar Campos especificos
-  static Future<int> updateFields(String tableName, dynamic data,String condicion, dynamic arguments ) async{
-    final db = await conectionDataBase();
-    return db.update(
-      tableName, // Nombre de la tabla
-      data,     // Mapa con los campos y valores a actualizar
-      where: condicion, // Condición para especificar qué fila se va a actualizar
-      whereArgs: arguments, // Argumentos para la condición
-    );
-  }
 
   //Elimninar usando helper
   static Future<int> delete(String tableName, int id) async{
@@ -95,7 +84,7 @@ class DbConecction {
   //Listar usando helper
   static Future<List<Map<String, dynamic>>> list(String tableName) async{
     final db = await conectionDataBase();
-    return await db.query(tableName,orderBy: 'estadoEspe DESC,id DESC');
+    return await db.query(tableName);
   }
 
   //Listar usando sentencias SQL

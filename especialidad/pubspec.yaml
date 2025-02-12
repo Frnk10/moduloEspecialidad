@@ -33,7 +33,8 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.1.2 # Version para subir imagen de la galeria o camara del movil
-
+  path_provider: ^2.1.5 # Importar paquete para guardar imagen en carpeta local
+  permission_handler: ^11.3.1 # Importar paquete para pedir permisos de acceso a la camara y galeria
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
