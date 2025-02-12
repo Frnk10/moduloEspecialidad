@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:especialidad/models/especialidad.dart';
 import 'package:especialidad/repositories/Especialidad/especialidad_repository.dart';
+import 'package:especialidad/views/Especialidad/especialidad_deta_view.dart';
 
 class ListadoEspecialidadView extends StatefulWidget {
   const ListadoEspecialidadView({super.key});
@@ -211,7 +212,12 @@ class _ListadoEspecialidadViewState extends State<ListadoEspecialidadView> {
                                     child: IconButton(
                                       icon: Icon(Icons.info),
                                       onPressed: () {
-                                        // Accion para ver info de la especialidad
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EspecialidadInfoView(especialidad: especialidad),
+                                          ),
+                                        );                                       // Accion para ver info de la especialidad
                                       },
                                       tooltip: 'Información especialidad',
                                     ),
